@@ -22,3 +22,4 @@ firmware-misc-nonfree
 firmware-iwlwifi
 firmware-realtek
 firmware-atheros
+git

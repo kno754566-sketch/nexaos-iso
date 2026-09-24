@@ -15,3 +15,11 @@ echo "NexaOS 1.0 \n \l" > /etc/issue
 wget -qO /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 apt-get install -y /tmp/chrome.deb
 rm -f /tmp/chrome.deb
+
+# Windows風アイコン（取得に失敗してもビルドは止めない）
+(
+  set +e
+  git clone --depth 1 https://github.com/vinceliuice/Fluent-icon-theme /tmp/fi && (cd /tmp/fi && ./install.sh)
+  if [ -d /usr/share/icons/Fluent ]; then printf '\n[Icons]\nTheme=Fluent\n' >> /etc/skel/.config/kdeglobals; fi
+  rm -rf /tmp/fi
+) || true

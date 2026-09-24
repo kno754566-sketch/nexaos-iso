@@ -1,5 +1,5 @@
 [KDE]
-LookAndFeelPackage=org.kde.breezedark.desktop
+LookAndFeelPackage=org.kde.breeze.desktop
 
 [General]
-AccentColor=59,140,255
+AccentColor=0,120,212
