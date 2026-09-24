@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=NexaOS first run
+Exec=/usr/local/bin/nexaos-firstrun
+X-KDE-autostart-phase=2
+NoDisplay=true

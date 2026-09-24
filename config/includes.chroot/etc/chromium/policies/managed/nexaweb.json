@@ -1,0 +1,11 @@
+{
+  "HomepageLocation": "https://www.google.com",
+  "HomepageIsNewTabPage": false,
+  "ShowHomeButton": true,
+  "RestoreOnStartup": 4,
+  "RestoreOnStartupURLs": ["https://www.google.com"],
+  "DefaultSearchProviderEnabled": true,
+  "DefaultSearchProviderName": "Google",
+  "DefaultSearchProviderSearchURL": "https://www.google.com/search?q={searchTerms}",
+  "BrowserThemeColor": "#1a73e8"
+}

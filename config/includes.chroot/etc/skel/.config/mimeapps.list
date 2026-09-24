@@ -1,0 +1,4 @@
+[Default Applications]
+text/html=nexaweb.desktop
+x-scheme-handler/http=nexaweb.desktop
+x-scheme-handler/https=nexaweb.desktop

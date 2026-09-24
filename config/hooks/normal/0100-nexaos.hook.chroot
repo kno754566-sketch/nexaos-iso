@@ -23,3 +23,7 @@ rm -f /tmp/chrome.deb
   if [ -d /usr/share/icons/Fluent ]; then printf '\n[Icons]\nTheme=Fluent\n' >> /etc/skel/.config/kdeglobals; fi
   rm -rf /tmp/fi
 ) || true
+
+# NexaWebだけをメニューに出す（素のChromiumは隠す。失敗しても止めない）
+sed -i '0,/^\[Desktop Entry\]/s//[Desktop Entry]\nNoDisplay=true/' /usr/share/applications/chromium.desktop || true
+gtk-update-icon-cache -f /usr/share/icons/hicolor || true

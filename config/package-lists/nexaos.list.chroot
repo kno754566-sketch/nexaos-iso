@@ -23,3 +23,7 @@ firmware-iwlwifi
 firmware-realtek
 firmware-atheros
 git
+fonts-open-sans
+sddm-theme-breeze
+chromium
+chromium-l10n

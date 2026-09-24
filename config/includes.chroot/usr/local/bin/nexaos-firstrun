@@ -1,0 +1,7 @@
+#!/bin/bash
+M="$HOME/.config/nexaos-firstrun-done"
+[ -f "$M" ] && exit 0
+sleep 8
+plasma-apply-wallpaperimage /usr/share/backgrounds/nexaos/nexaos.jpg || true
+dbus-send --session --dest=org.kde.plasmashell --type=method_call /PlasmaShell org.kde.PlasmaShell.evaluateScript string:"$(cat /usr/share/nexaos/panel.js)" || true
+touch "$M"

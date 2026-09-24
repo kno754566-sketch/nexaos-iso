@@ -3,3 +3,10 @@ LookAndFeelPackage=org.kde.breeze.desktop
 
 [General]
 AccentColor=0,120,212
+font=Open Sans,10,-1,5,50,0,0,0,0,0
+menuFont=Open Sans,10,-1,5,50,0,0,0,0,0
+toolBarFont=Open Sans,10,-1,5,50,0,0,0,0,0
+smallestReadableFont=Open Sans,8,-1,5,50,0,0,0,0,0
+
+[WM]
+activeFont=Open Sans,10,-1,5,50,0,0,0,0,0
