@@ -1,0 +1,15 @@
+#!/bin/bash
+# NexaOS セットアップ画面（ライブ起動のときだけ表示）
+grep -q 'boot=live' /proc/cmdline || exit 0
+F=/tmp/.nexaos-welcome-done; [ -f "$F" ] && exit 0; touch "$F"
+sleep 14
+if kdialog --title "NexaOS セットアップ" --yes-label "インストールする（アカウント作成）" --no-label "このまま試す" --yesno "NexaOS 1.0 へようこそ。
+
+・インストールすると、自分のユーザー名とパスワードを作れます。
+  次回からは、そのアカウントでログインします。
+・このまま試すこともできます。
+  ログイン用のユーザー名は nexa、パスワードは live です。
+
+インストールを始めますか？"; then
+  if command -v calamares_polkit >/dev/null; then calamares_polkit; else pkexec /usr/bin/calamares; fi
+fi

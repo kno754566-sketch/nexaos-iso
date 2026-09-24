@@ -38,3 +38,6 @@ printf 'DISTRIB_ID=NexaOS\nDISTRIB_RELEASE=1.0\nDISTRIB_DESCRIPTION="NexaOS 1.0"
 for f in /etc/calamares/branding/*/branding.desc; do
   [ -f "$f" ] && sed -i -E 's/^(\s*(productName|shortProductName|bootloaderEntryName):\s*).*/\1NexaOS/; s/^(\s*(versionedName|shortVersionedName):\s*).*/\1NexaOS 1.0/' "$f" || true
 done
+
+# インストールしたOSは、必ずログイン画面でパスワードを入れる
+sed -i 's/^doAutologin:.*/doAutologin: false/' /etc/calamares/modules/users.conf || true

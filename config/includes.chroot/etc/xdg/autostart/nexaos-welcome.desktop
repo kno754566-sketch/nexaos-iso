@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=NexaOS Setup
+Exec=/usr/local/bin/nexaos-welcome
+X-KDE-autostart-phase=2
+NoDisplay=true
