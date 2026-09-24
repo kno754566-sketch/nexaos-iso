@@ -1,6 +1,7 @@
 [KDE]
 LookAndFeelPackage=org.kde.breeze.desktop
 AnimationDurationFactor=0
+SingleClick=false
 
 [General]
 AccentColor=0,120,212

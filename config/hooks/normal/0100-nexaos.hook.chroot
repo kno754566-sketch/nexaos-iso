@@ -41,3 +41,28 @@ done
 
 # インストールしたOSは、必ずログイン画面でパスワードを入れる
 sed -i 's/^doAutologin:.*/doAutologin: false/' /etc/calamares/modules/users.conf || true
+
+# 見た目をNexaOS風にする（KDE・Debianの名前を隠す。失敗しても止めない）
+set +e
+echo 'LOGO=nexaos-logo' >> /etc/os-release
+mkdir -p /usr/local/share/applications
+rename() {
+  f=/usr/share/applications/$1; [ -f "$f" ] || return 0
+  awk -v n="$2" '/^\[/{s=($0=="[Desktop Entry]"); print; if(s){print "Name=" n; print "Name[ja]=" n}; next} s&&/^(Name|GenericName)(\[[^]]*\])?=/{next} {print}' "$f" > "/usr/local/share/applications/$1"
+}
+rename org.kde.dolphin.desktop "Nexaファイル"
+rename org.kde.konsole.desktop "Nexaターミナル"
+rename org.kde.kate.desktop "Nexaメモ"
+rename systemsettings.desktop "Nexa設定"
+rename org.kde.plasma-systemmonitor.desktop "Nexaモニター"
+echo '. /usr/share/nexaos/prompt.sh' >> /etc/skel/.bashrc
+# 起動画面（文字ではなくロゴを表示）
+cp /usr/share/nexaos/watermark.png /usr/share/plymouth/themes/spinner/watermark.png
+plymouth-set-default-theme -R spinner
+# インストール後のブートメニューはほぼ隠し、UEFIの項目名もNexaOSにする
+if [ -f /etc/default/grub ]; then
+  sed -i 's/^GRUB_TIMEOUT=.*/GRUB_TIMEOUT=2/' /etc/default/grub
+  grep -q '^GRUB_TIMEOUT_STYLE' /etc/default/grub && sed -i 's/^GRUB_TIMEOUT_STYLE=.*/GRUB_TIMEOUT_STYLE=hidden/' /etc/default/grub || echo 'GRUB_TIMEOUT_STYLE=hidden' >> /etc/default/grub
+fi
+sed -i 's/^efiBootloaderId:.*/efiBootloaderId: "nexaos"/' /etc/calamares/modules/bootloader.conf
+true

@@ -1,0 +1,5 @@
+[services][org.kde.dolphin.desktop]
+_launch=Meta+E
+
+[services][org.kde.plasma-systemmonitor.desktop]
+_launch=Ctrl+Shift+Esc

@@ -6,7 +6,9 @@ if (p) {
   p.location = "bottom";
   p.height = 46;
   spacer(p);
-  p.addWidget("org.kde.plasma.kickoff");
+  var k = p.addWidget("org.kde.plasma.kickoff");
+  k.currentConfigGroup = ["General"];
+  k.writeConfig("icon", "nexaos-logo");
   var t = p.addWidget("org.kde.plasma.icontasks");
   t.currentConfigGroup = ["General"];
   t.writeConfig("fill", "false");
@@ -14,4 +16,5 @@ if (p) {
   spacer(p);
   p.addWidget("org.kde.plasma.systemtray");
   p.addWidget("org.kde.plasma.digitalclock");
+  p.addWidget("org.kde.plasma.showdesktop");
 }

@@ -42,3 +42,5 @@ apparmor-profiles
 unattended-upgrades
 libpam-pwquality
 python3
+plymouth
+plymouth-themes
