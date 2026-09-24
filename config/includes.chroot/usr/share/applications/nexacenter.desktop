@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=NexaCenter
+GenericName=高速化・セキュリティ・バックアップ
+Exec=/usr/local/bin/nexacenter
+Icon=nexacenter
+Terminal=false
+Categories=System;Settings;
+StartupWMClass=NexaCenter

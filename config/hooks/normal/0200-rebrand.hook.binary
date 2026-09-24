@@ -1,0 +1,2 @@
+#!/bin/bash
+sed -i 's/Debian GNU\/Linux/NexaOS/g; s/Debian/NexaOS/g' binary/isolinux/*.cfg binary/boot/grub/grub.cfg 2>/dev/null || true

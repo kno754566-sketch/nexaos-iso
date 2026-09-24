@@ -1,0 +1,16 @@
+#!/bin/bash
+# NexaBackup — 元に戻せるスナップショット（変わったファイルだけ増える方式）
+[ "$EUID" -eq 0 ] || exec pkexec "$(readlink -f "$0")" "$@"
+D=/var/backups/nexaos; mkdir -p "$D"
+case "$1" in
+  create)
+    n=$(date +%Y%m%d-%H%M%S); last=$(ls -1 "$D" | grep -v '\.tmp$' | tail -1)
+    mkdir -p "$D/$n.tmp"
+    rsync -aH --delete --exclude='.cache' ${last:+--link-dest="$D/$last"} /home /etc "$D/$n.tmp/" \
+      && mv "$D/$n.tmp" "$D/$n" && echo "バックアップを作成しました: $n"
+    ls -1 "$D" | grep -v '\.tmp$' | head -n -7 | while read -r old; do rm -rf "$D/$old"; done ;;
+  list)    ls -1 "$D" | grep -v '\.tmp$' ;;
+  restore) [ -d "$D/$2/home" ] || { echo "その時点のバックアップはありません: $2"; exit 1; }
+           rsync -aH --delete "$D/$2/home/" /home/ && echo "ホームフォルダを $2 の状態に戻しました" ;;
+  *)       echo "使い方: nexa-backup {create | list | restore <日時>}" ;;
+esac

@@ -1,3 +1,3 @@
 #!/bin/bash
 # NexaWeb — NexaOSの標準ウェブブラウザ（Chromiumベース）
-exec chromium --class=NexaWeb --name=NexaWeb "$@"
+exec chromium --class=NexaWeb --name=NexaWeb --load-extension=/usr/share/nexaweb/guard --no-first-run --password-store=basic "$@"

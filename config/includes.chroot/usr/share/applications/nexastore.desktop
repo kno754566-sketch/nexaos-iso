@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Nexaストア
+GenericName=ソフトウェアのダウンロードとインストール
+Exec=plasma-discover %U
+Icon=nexastore
+Terminal=false
+Categories=System;PackageManager;
+StartupWMClass=org.kde.discover

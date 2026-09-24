@@ -1,11 +1,18 @@
 {
-  "HomepageLocation": "https://www.google.com",
+  "HomepageLocation": "http://127.0.0.1:8484/",
   "HomepageIsNewTabPage": false,
+  "NewTabPageLocation": "http://127.0.0.1:8484/",
   "ShowHomeButton": true,
   "RestoreOnStartup": 4,
-  "RestoreOnStartupURLs": ["https://www.google.com"],
+  "RestoreOnStartupURLs": ["http://127.0.0.1:8484/"],
   "DefaultSearchProviderEnabled": true,
-  "DefaultSearchProviderName": "Google",
-  "DefaultSearchProviderSearchURL": "https://www.google.com/search?q={searchTerms}",
-  "BrowserThemeColor": "#1a73e8"
+  "DefaultSearchProviderName": "NexaSearch",
+  "DefaultSearchProviderKeyword": "nexa",
+  "DefaultSearchProviderSearchURL": "http://127.0.0.1:8484/search?q={searchTerms}",
+  "BrowserThemeColor": "#1a73e8",
+  "BrowserSignin": 0,
+  "SyncDisabled": true,
+  "MetricsReportingEnabled": false,
+  "PasswordManagerEnabled": false,
+  "BlockThirdPartyCookies": true
 }

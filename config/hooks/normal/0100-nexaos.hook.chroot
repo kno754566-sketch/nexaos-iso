@@ -11,10 +11,6 @@ EOF_PLACEHOLDER=
 OSREL
 sed -i '/EOF_PLACEHOLDER/d' /etc/os-release
 echo "NexaOS 1.0 \n \l" > /etc/issue
-# Google Chrome（Google公式のdebを取得してインストール）
-wget -qO /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-apt-get install -y /tmp/chrome.deb
-rm -f /tmp/chrome.deb
 
 # Windows風アイコン（取得に失敗してもビルドは止めない）
 (
@@ -27,3 +23,18 @@ rm -f /tmp/chrome.deb
 # NexaWebだけをメニューに出す（素のChromiumは隠す。失敗しても止めない）
 sed -i '0,/^\[Desktop Entry\]/s//[Desktop Entry]\nNoDisplay=true/' /usr/share/applications/chromium.desktop || true
 gtk-update-icon-cache -f /usr/share/icons/hicolor || true
+
+# ファイアウォールと毎日のバックアップを最初から有効にする（失敗しても止めない）
+sed -i 's/^ENABLED=.*/ENABLED=yes/' /etc/ufw/ufw.conf || true
+systemctl enable ufw.service nexa-backup.timer || true
+
+# ストアの入口を「Nexaストア」に一本化・独自サービスを有効化・ガーネース仕様の表示
+sed -i '0,/^\[Desktop Entry\]/s//[Desktop Entry]\nNoDisplay=true/' /usr/share/applications/org.kde.discover.desktop || true
+systemctl enable nexasearch.service zramswap.service unattended-upgrades.service || true
+printf 'NexaOS 1.0 (ガーネース) \\n \\l\n' > /etc/issue
+printf 'NexaOS 1.0\n' > /etc/issue.net
+printf 'DISTRIB_ID=NexaOS\nDISTRIB_RELEASE=1.0\nDISTRIB_DESCRIPTION="NexaOS 1.0"\n' > /etc/lsb-release
+[ -f /etc/default/grub ] && sed -i 's/^GRUB_DISTRIBUTOR=.*/GRUB_DISTRIBUTOR="NexaOS"/' /etc/default/grub || true
+for f in /etc/calamares/branding/*/branding.desc; do
+  [ -f "$f" ] && sed -i -E 's/^(\s*(productName|shortProductName|bootloaderEntryName):\s*).*/\1NexaOS/; s/^(\s*(versionedName|shortVersionedName):\s*).*/\1NexaOS 1.0/' "$f" || true
+done

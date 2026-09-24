@@ -4,4 +4,5 @@ M="$HOME/.config/nexaos-firstrun-done"
 sleep 8
 plasma-apply-wallpaperimage /usr/share/backgrounds/nexaos/nexaos.jpg || true
 dbus-send --session --dest=org.kde.plasmashell --type=method_call /PlasmaShell org.kde.PlasmaShell.evaluateScript string:"$(cat /usr/share/nexaos/panel.js)" || true
+flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo || true
 touch "$M"

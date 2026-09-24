@@ -10,7 +10,7 @@ if (p) {
   var t = p.addWidget("org.kde.plasma.icontasks");
   t.currentConfigGroup = ["General"];
   t.writeConfig("fill", "false");
-  t.writeConfig("launchers", "applications:nexaweb.desktop,applications:org.kde.dolphin.desktop,applications:org.kde.konsole.desktop,applications:org.kde.plasma-systemmonitor.desktop");
+  t.writeConfig("launchers", "applications:nexaweb.desktop,applications:org.kde.dolphin.desktop,applications:org.kde.konsole.desktop,applications:nexastore.desktop,applications:nexacenter.desktop,applications:org.kde.plasma-systemmonitor.desktop");
   spacer(p);
   p.addWidget("org.kde.plasma.systemtray");
   p.addWidget("org.kde.plasma.digitalclock");

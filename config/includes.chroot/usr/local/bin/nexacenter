@@ -1,0 +1,32 @@
+#!/bin/bash
+# NexaCenter — NexaOS独自の管理センター
+T="NexaCenter"
+show() { kdialog --title "$T" --textbox "$1" 560 320; }
+run() { local o; o=$(mktemp); "$@" >"$o" 2>&1; show "$o"; rm -f "$o"; }
+while true; do
+  c=$(kdialog --title "$T" --menu "何をしますか？" \
+    boost "ワンクリック高速化・お掃除" \
+    fw "ファイアウォールの状態を見る" \
+    fwon "ファイアウォールをオンにする" \
+    scan "ウイルススキャン（ダウンロードフォルダ）" \
+    bk "バックアップを今すぐ作成" \
+    rs "バックアップから元に戻す" \
+    about "NexaOSについて") || exit 0
+  case "$c" in
+    boost) run nexa-boost ;;
+    fw) run nexa-shield status ;;
+    fwon) run nexa-shield on ;;
+    scan)
+      ls /var/lib/clamav/*.c[vl]d >/dev/null 2>&1 || { kdialog --title "$T" --msgbox "ウイルス定義を更新中です。ネットに接続して、数分後にもう一度お試しください。"; continue; }
+      run nexa-shield scan ;;
+    about) kdialog --title "$T" --textbox /usr/share/nexaos/ABOUT.txt 600 380 ;;
+    bk) run nexa-backup create ;;
+    rs)
+      mapfile -t L < <(ls -1 /var/backups/nexaos 2>/dev/null | grep -v '\.tmp$' | tac)
+      [ ${#L[@]} -eq 0 ] && { kdialog --title "$T" --msgbox "バックアップがまだありません。"; continue; }
+      a=(); for s in "${L[@]}"; do a+=("$s" "$s"); done
+      s=$(kdialog --title "$T" --menu "戻す時点を選んでください" "${a[@]}") || continue
+      kdialog --title "$T" --warningcontinuecancel "ホームフォルダを $s の状態に戻します。それ以降に作った・変えたファイルは消えます。" \
+        && run nexa-backup restore "$s" ;;
+  esac
+done

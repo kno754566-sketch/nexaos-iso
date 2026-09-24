@@ -1,0 +1,13 @@
+NexaOS 1.0 — すべての国のためのOS
+
+NexaOS は、架空の国「ガーネース」で生まれたオープンソースのOSです。
+国や地域、言語、立場にかかわらず、誰もが安全に使えるOSを目指しています。
+
+主な機能:
+  NexaWeb（ブラウザ）/ NexaSearch（検索）/ NexaCenter（高速化・セキュリティ・バックアップ）
+  NexaVPN / Nexaストア
+
+ライセンス:
+  NexaOS独自の部分は MIT ライセンスです。
+  NexaOS は Debian、KDE Plasma、Chromium などのオープンソースソフトウェアの上に作られています。
+  それぞれの著作権とライセンスは /usr/share/doc/ 以下と、NOTICE に記載されています。

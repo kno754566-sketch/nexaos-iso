@@ -1,0 +1,15 @@
+#!/bin/bash
+# NexaBoost — ワンクリック高速化・お掃除
+[ "$EUID" -eq 0 ] || exec pkexec "$(readlink -f "$0")" "$@"
+U=${PKEXEC_UID:-${SUDO_UID:-1000}}; H=$(getent passwd "$U" | cut -d: -f6)
+before=$(df --output=avail -k / | tail -1)
+apt-get clean
+journalctl --vacuum-time=7d >/dev/null 2>&1
+find /tmp /var/tmp -xdev -type f -atime +3 -delete 2>/dev/null
+rm -rf "$H"/.cache/thumbnails/* "$H"/.local/share/Trash/files/* "$H"/.local/share/Trash/info/* 2>/dev/null
+fstrim -av 2>/dev/null
+sync; echo 1 > /proc/sys/vm/drop_caches 2>/dev/null
+after=$(df --output=avail -k / | tail -1)
+echo "お掃除が完了しました。"
+echo "空き容量の変化: 約 $(( (after-before)/1024 )) MB"
+echo "（パッケージのキャッシュ、古いログ、一時ファイル、サムネイル、ゴミ箱を整理し、SSDのTRIMとメモリキャッシュの解放をしました）"

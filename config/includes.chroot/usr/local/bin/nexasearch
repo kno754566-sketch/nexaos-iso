@@ -1,0 +1,73 @@
+#!/usr/bin/env python3
+# NexaSearch — 追跡しない・履歴を残さない、NexaOS独自の検索ソフト（127.0.0.1:8484）
+import html, json, re, urllib.parse, urllib.request
+from concurrent.futures import ThreadPoolExecutor
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+
+UA = "Mozilla/5.0 (X11; Linux x86_64) NexaSearch/1.0"
+TAG = re.compile(r"<.*?>")
+
+def get(url, data=None):
+    req = urllib.request.Request(url, data=data, headers={"User-Agent": UA})
+    return urllib.request.urlopen(req, timeout=8).read().decode("utf-8", "replace")
+
+def clean(s): return TAG.sub("", html.unescape(s)).strip()
+
+def ddg(q):
+    page = get("https://html.duckduckgo.com/html/", urllib.parse.urlencode({"q": q}).encode())
+    out = []
+    for m in re.finditer(r'class="result__a" href="([^"]+)">(.*?)</a>.*?class="result__snippet"[^>]*>(.*?)</a>', page, re.S):
+        href = html.unescape(m.group(1))
+        u = urllib.parse.parse_qs(urllib.parse.urlparse(href).query).get("uddg", [href])[0]
+        out.append((clean(m.group(2)), u, clean(m.group(3))))
+    return out[:10]
+
+def wiki(q):
+    j = json.loads(get("https://ja.wikipedia.org/w/api.php?" + urllib.parse.urlencode(
+        {"action": "query", "list": "search", "srsearch": q, "format": "json", "srlimit": 2})))
+    return [(r["title"], "https://ja.wikipedia.org/wiki/" + urllib.parse.quote(r["title"].replace(" ", "_")), clean(r["snippet"]))
+            for r in j["query"]["search"]]
+
+def safe(f, q):
+    try: return f(q)
+    except Exception: return []
+
+def item(t, u, s, cls="r"):
+    warn = ' <span class="w">⚠ 暗号化なし</span>' if u.startswith("http://") else ""
+    return (f'<div class="{cls}"><a href="{html.escape(u, quote=True)}" rel="noreferrer">{html.escape(t)}</a>{warn}'
+            f'<div class="u">{html.escape(u)}</div><div class="s">{html.escape(s)}</div></div>')
+
+def results(q):
+    with ThreadPoolExecutor(2) as ex:
+        a, b = ex.submit(safe, ddg, q), ex.submit(safe, wiki, q)
+        web, wk = a.result(), b.result()
+    out = "".join(item(*x, cls="card") for x in wk[:1]) + "".join(item(*x) for x in web)
+    return out or "<p>検索結果を取得できませんでした。ネットワークに接続されているか確認してください。</p>"
+
+PAGE = """<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><title>NexaSearch</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"><style>
+body{margin:0;font:15px 'Open Sans','Noto Sans CJK JP',sans-serif;color:#e8eaf0;min-height:100vh;background:linear-gradient(135deg,#0b1f3f,#0d47a1 70%,#1a73e8)}
+form{display:flex;gap:8px;max-width:720px;margin:28px auto 8px;padding:0 16px}
+input{flex:1;padding:12px 18px;border-radius:24px;border:1px solid #ffffff44;background:#0b1f3f99;color:#fff;font-size:16px;outline:0}
+button{padding:0 22px;border:0;border-radius:24px;background:#1a73e8;color:#fff;font-size:15px;cursor:pointer}
+.hero{text-align:center;margin-top:12vh}h1{font-size:54px;margin:0;font-weight:400}h1 b{color:#8ab4f8}.hero p{opacity:.8}
+main{max-width:720px;margin:0 auto;padding:8px 16px 40px}
+.r{margin:18px 0}.r a{color:#8ab4f8;font-size:18px;text-decoration:none}.r a:hover{text-decoration:underline}
+.u{color:#9fe3b0;font-size:13px;word-break:break-all}.w{color:#ffcc80;font-size:12px}.s{color:#c5cee0;margin-top:2px}
+.card{background:#ffffff14;border:1px solid #ffffff22;border-radius:12px;padding:12px 16px;margin:16px 0}
+</style></head><body><form action="/search"><input name="q" value="%%Q%%" placeholder="NexaSearchで検索" autofocus><button>検索</button></form><main>%%BODY%%</main></body></html>"""
+HOME = '<div class="hero"><h1>Nexa<b>Search</b></h1><p>追跡しない・履歴を残さない。すべての国のための検索。</p></div>'
+
+class H(BaseHTTPRequestHandler):
+    def log_message(self, *a): pass
+    def do_GET(self):
+        u = urllib.parse.urlparse(self.path)
+        q = urllib.parse.parse_qs(u.query).get("q", [""])[0].strip()[:300]
+        body = results(q) if (u.path == "/search" and q) else HOME
+        data = PAGE.replace("%%Q%%", html.escape(q, quote=True)).replace("%%BODY%%", body).encode()
+        self.send_response(200)
+        for k, v in [("Content-Type", "text/html; charset=utf-8"), ("Cache-Control", "no-store"), ("Referrer-Policy", "no-referrer")]:
+            self.send_header(k, v)
+        self.end_headers(); self.wfile.write(data)
+
+ThreadingHTTPServer(("127.0.0.1", 8484), H).serve_forever()

@@ -1,0 +1,11 @@
+#!/bin/bash
+# NexaShield — ファイアウォールとウイルス対策
+[ "$EUID" -eq 0 ] || exec pkexec "$(readlink -f "$0")" "$@"
+case "$1" in
+  status) ufw status verbose ;;
+  on)     ufw default deny incoming; ufw default allow outgoing; ufw --force enable ;;
+  off)    ufw disable ;;
+  scan)   shift; U=${PKEXEC_UID:-${SUDO_UID:-1000}}; H=$(getent passwd "$U" | cut -d: -f6)
+          clamscan -r --infected "${1:-$H/Downloads}"; echo "スキャンが終わりました（上に出たものが感染ファイルです）" ;;
+  *)      echo "使い方: nexa-shield {status | on | off | scan [フォルダ]}" ;;
+esac

@@ -1,0 +1,6 @@
+[Unit]
+Description=NexaOS 自動バックアップ
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/nexa-backup create
