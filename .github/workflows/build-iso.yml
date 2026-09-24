@@ -1,0 +1,20 @@
+name: Build NexaOS ISO
+on: workflow_dispatch
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - name: ディスクを空ける
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          df -h /
+      - name: ISOをビルド（Debian 13 コンテナ内）
+        run: docker run --rm --privileged -v "$PWD:/w" -w /w debian:trixie ./build.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nexaos-1.0-iso
+          path: "*.iso"
+          compression-level: 0
+          retention-days: 7

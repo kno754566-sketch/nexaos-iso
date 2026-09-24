@@ -1,0 +1,11 @@
+#!/bin/bash
+# NexaVPN — WireGuardベースの暗号化VPNクライアント
+C=/etc/wireguard/nexavpn.conf
+case "$1" in
+  import) sudo install -m600 "$2" "$C" && echo "設定を取り込みました" ;;
+  keygen) umask 077; wg genkey | tee "$HOME/nexavpn.key" | wg pubkey ;;
+  up)     sudo wg-quick up nexavpn ;;
+  down)   sudo wg-quick down nexavpn ;;
+  status) sudo wg show nexavpn 2>/dev/null || echo "未接続" ;;
+  *)      echo "使い方: nexavpn {keygen | import <設定.conf> | up | down | status}" ;;
+esac
