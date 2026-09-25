@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Nexaゲームストア
+GenericName=Epic GamesやGOGのゲームを入手
+Exec=plasma-discover appstream://com.heroicgameslauncher.hgl
+Icon=nexagamestore
+Terminal=false
+Categories=Game;

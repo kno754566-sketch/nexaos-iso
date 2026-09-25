@@ -14,6 +14,7 @@ if (p) {
   t.writeConfig("fill", "false");
   t.writeConfig("launchers", "applications:nexaweb.desktop,applications:org.kde.dolphin.desktop,applications:org.kde.konsole.desktop,applications:nexastore.desktop,applications:nexacenter.desktop,applications:org.kde.plasma-systemmonitor.desktop");
   spacer(p);
+  p.addWidget("org.kde.plasma.pager");
   p.addWidget("org.kde.plasma.systemtray");
   p.addWidget("org.kde.plasma.digitalclock");
   p.addWidget("org.kde.plasma.showdesktop");

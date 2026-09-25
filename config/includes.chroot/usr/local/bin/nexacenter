@@ -12,7 +12,9 @@ while true; do
     bk "バックアップを今すぐ作成" \
     rs "バックアップから元に戻す" \
     about "NexaOSについて" \
-    gap ".gapファイルをインストール") || exit 0
+    gap ".gapファイルをインストール" \
+    remote "リモートデスクトップの切り替え" \
+    game "ゲームモードの切り替え") || exit 0
   case "$c" in
     boost) run nexa-boost ;;
     fw) run nexa-shield status ;;
@@ -22,6 +24,14 @@ while true; do
       run nexa-shield scan ;;
     about) kdialog --title "$T" --textbox /usr/share/nexaos/ABOUT.txt 600 380 ;;
     gap) f=$(kdialog --title "$T" --getopenfilename "$HOME" "*.gap"); [ -n "$f" ] && nexapkg-gui "$f" ;;
+    remote)
+      s=$(nexa-remote status 2>/dev/null)
+      kdialog --title "$T" --yesno "$s
+
+切り替えますか？（有効にすると、他の端末からパスワードでログインできるようになります）" \
+        && { echo "$s" | grep -q 有効 && run nexa-remote off || run nexa-remote on; } ;;
+    game)
+      run nexa-gamemode on ;;
     bk) run nexa-backup create ;;
     rs)
       mapfile -t L < <(ls -1 /var/backups/nexaos 2>/dev/null | grep -v '\.tmp$' | tac)

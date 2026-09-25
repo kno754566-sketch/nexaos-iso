@@ -1,0 +1,15 @@
+#!/bin/bash
+# NexaGameMode — ゲーム中の性能を優先する（アニメーション・効果を止め、CPU性能を優先）
+[ "$EUID" -eq 0 ] || exec pkexec "$(readlink -f "$0")" "$@"
+U=${PKEXEC_UID:-${SUDO_UID:-1000}}; RUN=/run/user/$U
+case "$1" in
+  on)
+    cpupower frequency-set -g performance >/dev/null 2>&1
+    su - "$(getent passwd "$U" | cut -d: -f1)" -c "DBUS_SESSION_BUS_ADDRESS=unix:path=$RUN/bus kwriteconfig6 --file kwinrc --group Compositing --key Enabled false && qdbus6 org.kde.KWin /Compositor suspend" 2>/dev/null
+    echo "ゲームモードを有効にしました" ;;
+  off)
+    cpupower frequency-set -g powersave >/dev/null 2>&1
+    su - "$(getent passwd "$U" | cut -d: -f1)" -c "DBUS_SESSION_BUS_ADDRESS=unix:path=$RUN/bus kwriteconfig6 --file kwinrc --group Compositing --key Enabled true && qdbus6 org.kde.KWin /Compositor resume" 2>/dev/null
+    echo "ゲームモードを解除しました" ;;
+  *) echo "使い方: nexa-gamemode {on|off}" ;;
+esac

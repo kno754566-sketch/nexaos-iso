@@ -80,3 +80,28 @@ for f in /etc/xdg/autostart/org.kde.plasma-welcome.desktop /usr/share/applicatio
   [ -f "$f" ] && sed -i '0,/^\[Desktop Entry\]/s//[Desktop Entry]\nNoDisplay=true\nX-KDE-autostart-condition=false/' "$f"
 done
 true
+
+# 毎回の起動時に、管理者権限を取りにくくする（ライブ環境の自動sudoを上書きする）
+systemctl enable nexa-harden.service || true
+passwd -l root || true
+sed -i 's/^#\s*auth\s\+required\s\+pam_wheel.so\s\+group=sudo.*/auth       required   pam_wheel.so group=sudo/' /etc/pam.d/su || true
+
+# さらにLinuxだと分かりにくくする（システムの動きには影響しない範囲で）
+set +e
+# ターミナルで直接 uname と打ったときの表示だけをNexaOS風にする（スクリプトやプログラムには影響しない）
+cat >> /etc/skel/.bashrc <<'INNER'
+uname() { if [ "$#" -eq 0 ]; then command echo "NexaOS"; else command uname "$@" | sed 's/Linux/NexaOS/'; fi; }
+INNER
+
+# GRUBの起動メニューの表示から「GNU/Linux」の文字を消す（起動そのものには影響しない）
+[ -f /etc/grub.d/10_linux ] && sed -i 's/GNU\/Linux//g' /etc/grub.d/10_linux
+
+# 見えにくい場所にあるディストリビューション名の手がかりを消す
+rm -f /etc/debian_version
+true
+
+# 新しいアプリの表示名をNexa風にし、リモート操作は既定でオフにする
+rename org.kde.kdeconnect.app.desktop "NexaShare"
+rename simplescreenrecorder.desktop "Nexa録画"
+systemctl disable xrdp 2>/dev/null
+true

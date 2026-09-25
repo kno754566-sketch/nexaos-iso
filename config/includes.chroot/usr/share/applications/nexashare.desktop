@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=NexaShare
+GenericName=近くの端末とファイル・通知を共有
+Exec=kdeconnect-app
+Icon=nexashare
+Terminal=false
+Categories=Network;

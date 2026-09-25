@@ -5,3 +5,7 @@ ButtonsOnRight=IAX
 [Plugins]
 blurEnabled=false
 wobblywindowsEnabled=false
+
+[Desktops]
+Number=4
+Rows=1

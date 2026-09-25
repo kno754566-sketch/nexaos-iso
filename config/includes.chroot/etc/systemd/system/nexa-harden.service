@@ -1,0 +1,13 @@
+[Unit]
+Description=NexaOS セキュリティ強化（管理者権限の簡単な取得を防ぐ）
+DefaultDependencies=no
+Before=sysinit.target
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/nexa-harden
+RemainAfterExit=no
+
+[Install]
+WantedBy=sysinit.target

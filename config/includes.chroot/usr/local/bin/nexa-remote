@@ -1,0 +1,8 @@
+#!/bin/bash
+# NexaRemote — 他の端末からの遠隔操作（オン/オフはNexaCenterから）
+[ "$EUID" -eq 0 ] || exec pkexec "$(readlink -f "$0")" "$@"
+case "$1" in
+  on)  systemctl enable --now xrdp; ufw allow 3389/tcp; echo "有効にしました。ユーザー名とパスワードで、他の端末（RDP対応）から接続できます。" ;;
+  off) systemctl disable --now xrdp; ufw delete allow 3389/tcp 2>/dev/null; echo "無効にしました。" ;;
+  *)   systemctl is-active xrdp >/dev/null 2>&1 && echo "現在: 有効" || echo "現在: 無効" ;;
+esac

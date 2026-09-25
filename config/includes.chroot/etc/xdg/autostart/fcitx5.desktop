@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Exec=fcitx5
+Name=Fcitx5
+X-KDE-autostart-phase=1

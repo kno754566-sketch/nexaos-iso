@@ -1,0 +1,22 @@
+#!/bin/bash
+# NexaOS 起動時セキュリティ強化 — 管理者権限を簡単に取得できないようにする
+set -e
+
+# 1. sudoを、パスワードなしでは使えないようにする（NOPASSWD設定を消す）
+for f in /etc/sudoers /etc/sudoers.d/*; do
+  [ -f "$f" ] || continue
+  grep -q 'NOPASSWD' "$f" || continue
+  tmp=$(mktemp)
+  sed -E 's/NOPASSWD:\s*//g' "$f" > "$tmp"
+  if visudo -cf "$tmp" >/dev/null 2>&1; then
+    cat "$tmp" > "$f"
+  fi
+  rm -f "$tmp"
+done
+
+# 2. root本人としてのログイン・suを禁止する（sudo経由だけにする）
+passwd -l root >/dev/null 2>&1 || true
+
+# 3. suコマンドは、sudoグループの人だけが使えるようにする
+grep -q '^auth\s\+required\s\+pam_wheel.so' /etc/pam.d/su || \
+  sed -i 's/^#\s*auth\s\+required\s\+pam_wheel.so\s\+group=sudo.*/auth       required   pam_wheel.so group=sudo/' /etc/pam.d/su

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Nexa録画
+GenericName=画面の録画
+Exec=simplescreenrecorder
+Icon=nexarecorder
+Terminal=false
+Categories=AudioVideo;
