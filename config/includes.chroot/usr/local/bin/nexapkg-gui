@@ -1,0 +1,15 @@
+#!/bin/bash
+# .gap ファイルをダブルクリックしたときのインストーラー
+f="$1"; T="NexaOSアプリのインストール"
+[ -f "$f" ] || exit 1
+kdialog --title "$T" --warningcontinuecancel \
+"「$(basename "$f")」をインストールします。
+
+.gap はNexaOS独自のアプリ配布形式です。
+信頼できる配布元からのファイルだけをインストールしてください。" || exit 0
+if out=$(nexapkg install "$f" 2>&1); then
+  kdialog --title "$T" --msgbox "$out"
+else
+  kdialog --title "$T" --error "インストールできませんでした:
+$out"
+fi

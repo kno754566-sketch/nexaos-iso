@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=NexaOS
+Description=NexaOS boot theme
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/nexaos
+ScriptFile=/usr/share/plymouth/themes/nexaos/nexaos.script

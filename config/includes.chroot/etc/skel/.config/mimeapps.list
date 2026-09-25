@@ -2,3 +2,4 @@
 text/html=nexaweb.desktop
 x-scheme-handler/http=nexaweb.desktop
 x-scheme-handler/https=nexaweb.desktop
+application/vnd.nexaos.package=nexapkg.desktop

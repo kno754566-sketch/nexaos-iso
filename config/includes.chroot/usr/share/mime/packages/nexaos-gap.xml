@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+  <mime-type type="application/vnd.nexaos.package">
+    <comment xml:lang="ja">NexaOSアプリパッケージ</comment>
+    <comment>NexaOS Application Package</comment>
+    <glob pattern="*.gap"/>
+    <magic priority="60"><match type="string" value="!&lt;arch&gt;" offset="0"/></magic>
+  </mime-type>
+</mime-info>

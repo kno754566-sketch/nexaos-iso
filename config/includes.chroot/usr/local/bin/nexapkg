@@ -1,0 +1,19 @@
+#!/bin/bash
+# nexapkg — .gap（NexaOS Application Package）の作成とインストール
+set -e
+MAGIC='!<arch>'  # .deb（arアーカイブ）と同じ中身。拡張子だけ .gap に変える独自形式
+case "$1" in
+  pack)
+    [ -f "$2" ] || { echo "元になる .deb ファイルが見つかりません: $2"; exit 1; }
+    out="${3:-${2%.deb}.gap}"
+    head -c 7 "$2" | grep -q "$MAGIC" || { echo "対応していない形式です（.debのみ）"; exit 1; }
+    cp "$2" "$out" && echo "作成しました: $out" ;;
+  install)
+    f="$2"; [ -f "$f" ] || { echo "ファイルが見つかりません: $f"; exit 1; }
+    head -c 7 "$f" | grep -q "$MAGIC" || { echo "壊れているか、正しい .gap ファイルではありません"; exit 1; }
+    t=$(mktemp --suffix=.deb)
+    cp "$f" "$t"
+    pkexec apt-get install -y --allow-downgrades "$t" && echo "インストールしました: $(basename "$f")"
+    rm -f "$t" ;;
+  *) echo "使い方: nexapkg {pack <元.deb> [出力.gap] | install <ファイル.gap>}" ;;
+esac

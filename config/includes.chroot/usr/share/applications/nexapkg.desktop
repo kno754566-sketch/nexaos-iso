@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Nexaアプリインストーラー
+Exec=/usr/local/bin/nexapkg-gui %f
+Icon=nexapkg
+Terminal=false
+NoDisplay=true
+MimeType=application/vnd.nexaos.package;

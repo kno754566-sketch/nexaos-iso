@@ -57,12 +57,26 @@ rename systemsettings.desktop "Nexa設定"
 rename org.kde.plasma-systemmonitor.desktop "Nexaモニター"
 echo '. /usr/share/nexaos/prompt.sh' >> /etc/skel/.bashrc
 # 起動画面（文字ではなくロゴを表示）
-cp /usr/share/nexaos/watermark.png /usr/share/plymouth/themes/spinner/watermark.png
-plymouth-set-default-theme -R spinner
+plymouth-set-default-theme -R nexaos
 # インストール後のブートメニューはほぼ隠し、UEFIの項目名もNexaOSにする
 if [ -f /etc/default/grub ]; then
   sed -i 's/^GRUB_TIMEOUT=.*/GRUB_TIMEOUT=2/' /etc/default/grub
   grep -q '^GRUB_TIMEOUT_STYLE' /etc/default/grub && sed -i 's/^GRUB_TIMEOUT_STYLE=.*/GRUB_TIMEOUT_STYLE=hidden/' /etc/default/grub || echo 'GRUB_TIMEOUT_STYLE=hidden' >> /etc/default/grub
 fi
 sed -i 's/^efiBootloaderId:.*/efiBootloaderId: "nexaos"/' /etc/calamares/modules/bootloader.conf
+true
+
+# 「このシステムについて」の項目を隠し、NexaCenterの案内に一本化する（見つからなくても止めない）
+set +e
+for f in $(grep -rl -i 'about-distro\|X-KDE-System-Settings-Parent-Category=about-distro' /usr/share/applications /usr/share/kservices5 /usr/share/kservices6 2>/dev/null); do
+  grep -q '^NoDisplay=true' "$f" || sed -i '0,/^\[Desktop Entry\]/s//[Desktop Entry]\nNoDisplay=true/' "$f"
+done
+true
+
+# 初回起動時のキャラクター付きウィザード（plasma-welcome）を無効化する（無ければ何もしない）
+set +e
+apt-get purge -y plasma-welcome 2>/dev/null
+for f in /etc/xdg/autostart/org.kde.plasma-welcome.desktop /usr/share/applications/org.kde.plasma-welcome.desktop; do
+  [ -f "$f" ] && sed -i '0,/^\[Desktop Entry\]/s//[Desktop Entry]\nNoDisplay=true\nX-KDE-autostart-condition=false/' "$f"
+done
 true
